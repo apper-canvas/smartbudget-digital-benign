@@ -94,13 +94,14 @@ export default function Root() {
   };
 
   const handleAuthSuccess = (user) => {
+// CRITICAL: Declare variables in scope accessible to both if/else blocks
+    let currentPath = window.location.pathname + window.location.search;
+    let redirectPath = new URLSearchParams(window.location.search).get('redirect');
+    const isAuthPage = currentPath.includes('/login') || currentPath.includes('/signup') || 
+                       currentPath.includes('/callback') || currentPath.includes('/error');
+    
     if (user) {
       // CRITICAL: This exact currentPath logic must be preserved
-      let currentPath = window.location.pathname + window.location.search;
-      let redirectPath = new URLSearchParams(window.location.search).get('redirect');
-      const isAuthPage = currentPath.includes('/login') || currentPath.includes('/signup') || 
-                         currentPath.includes('/callback') || currentPath.includes('/error');
-      
       if (redirectPath) {
         navigate(redirectPath);
       } else if (!isAuthPage) {
