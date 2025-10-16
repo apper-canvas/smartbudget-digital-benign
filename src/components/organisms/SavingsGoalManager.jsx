@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
-import Card from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import FormField from "@/components/molecules/FormField";
-import Input from "@/components/atoms/Input";
-import ProgressCard from "@/components/molecules/ProgressCard";
-import ApperIcon from "@/components/ApperIcon";
+import React, { useEffect, useState } from "react";
 import { savingsGoalService } from "@/services/api/savingsGoalService";
-import { formatCurrency, formatDate, formatDateInput } from "@/utils/formatters";
 import { toast } from "react-toastify";
+import { formatCurrency, formatDate, formatDateInput } from "@/utils/formatters";
+import ApperIcon from "@/components/ApperIcon";
 import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Goals from "@/components/pages/Goals";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import Card from "@/components/atoms/Card";
+import FormField from "@/components/molecules/FormField";
+import ProgressCard from "@/components/molecules/ProgressCard";
 
 const SavingsGoalManager = () => {
   const [goals, setGoals] = useState([]);
@@ -59,11 +60,11 @@ const SavingsGoalManager = () => {
     }
 
     try {
-      const goalData = {
-        ...formData,
-        targetAmount: amount,
-        currentAmount: 0,
-        deadline: new Date(formData.deadline).toISOString()
+const goalData = {
+        title_c: formData.title,
+        target_amount_c: amount,
+        current_amount_c: 0,
+        deadline_c: new Date(formData.deadline).toISOString()
       };
 
       await savingsGoalService.create(goalData);
@@ -209,17 +210,17 @@ const SavingsGoalManager = () => {
             const daysRemaining = getDaysRemaining(goal.deadline);
             const isOverdue = daysRemaining < 0;
 
-            return (
+return (
               <Card key={goal.Id} className="p-6">
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-slate-900 mb-1">{goal.title}</h3>
+                      <h3 className="text-lg font-semibold text-slate-900 mb-1">{goal.title_c || goal.title}</h3>
                       <p className="text-sm text-slate-600">
-                        {formatCurrency(goal.currentAmount)} of {formatCurrency(goal.targetAmount)}
+                        {formatCurrency(goal.current_amount_c || goal.currentAmount)} of {formatCurrency(goal.target_amount_c || goal.targetAmount)}
                       </p>
                       <p className="text-xs text-slate-500 mt-1">
-                        Target: {formatDate(goal.deadline)}
+                        Target: {formatDate(goal.deadline_c || goal.deadline)}
                         {isOverdue ? (
                           <span className="text-error-600 font-medium ml-1">(Overdue)</span>
                         ) : daysRemaining <= 30 ? (
@@ -250,13 +251,13 @@ const SavingsGoalManager = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2">
+<div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-medium text-slate-700">
                         {percentage.toFixed(0)}% Complete
                       </span>
                       <span className="text-sm text-slate-600">
-                        {formatCurrency(goal.targetAmount - goal.currentAmount)} to go
+                        {formatCurrency((goal.target_amount_c || goal.targetAmount) - (goal.current_amount_c || goal.currentAmount))} to go
                       </span>
                     </div>
                     <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
@@ -307,9 +308,9 @@ const SavingsGoalManager = () => {
             
             <form onSubmit={handleContribute} className="space-y-4">
               <div>
-                <p className="text-sm text-slate-600 mb-2">Contributing to: <strong>{selectedGoal.title}</strong></p>
+<p className="text-sm text-slate-600 mb-2">Contributing to: <strong>{selectedGoal.title_c || selectedGoal.title}</strong></p>
                 <p className="text-sm text-slate-500">
-                  Current: {formatCurrency(selectedGoal.currentAmount)} / {formatCurrency(selectedGoal.targetAmount)}
+                  Current: {formatCurrency(selectedGoal.current_amount_c || selectedGoal.currentAmount)} / {formatCurrency(selectedGoal.target_amount_c || selectedGoal.targetAmount)}
                 </p>
               </div>
               

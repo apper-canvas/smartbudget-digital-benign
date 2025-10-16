@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
-import Card from "@/components/atoms/Card";
 import { transactionService } from "@/services/api/transactionService";
 import { getCurrentMonth } from "@/utils/formatters";
 import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Card from "@/components/atoms/Card";
 
 const ExpensePieChart = () => {
   const [chartData, setChartData] = useState([]);
@@ -16,23 +16,22 @@ const ExpensePieChart = () => {
     loadChartData();
   }, []);
 
-  const loadChartData = async () => {
+const loadChartData = async () => {
     setLoading(true);
     setError("");
     
     try {
       const currentMonth = getCurrentMonth();
       const transactions = await transactionService.getByMonth(currentMonth);
-      const expenses = transactions.filter(t => t.type === "expense");
-      
+      const expenses = transactions.filter(t => (t.type_c || t.type) === "expense");
       if (expenses.length === 0) {
         setChartData([]);
         return;
       }
 
       const categoryTotals = expenses.reduce((acc, transaction) => {
-        const category = transaction.category;
-        acc[category] = (acc[category] || 0) + Math.abs(transaction.amount);
+        const category = transaction.category_c || transaction.category;
+        acc[category] = (acc[category] || 0) + Math.abs(transaction.amount_c || transaction.amount);
         return acc;
       }, {});
 

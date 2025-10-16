@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import Button from "@/components/atoms/Button";
-import FormField from "@/components/molecules/FormField";
-import Input from "@/components/atoms/Input";
-import Select from "@/components/atoms/Select";
-import Card from "@/components/atoms/Card";
+import React, { useEffect, useState } from "react";
 import { categoryService } from "@/services/api/categoryService";
-import { formatDateInput } from "@/utils/formatters";
 import { toast } from "react-toastify";
+import { formatDateInput } from "@/utils/formatters";
+import Button from "@/components/atoms/Button";
+import Select from "@/components/atoms/Select";
+import Input from "@/components/atoms/Input";
+import Card from "@/components/atoms/Card";
+import FormField from "@/components/molecules/FormField";
 
 const TransactionForm = ({ onSubmit, onCancel, initialData = null, isEditing = false }) => {
   const [categories, setCategories] = useState([]);
@@ -23,14 +23,14 @@ const TransactionForm = ({ onSubmit, onCancel, initialData = null, isEditing = f
     loadCategories();
   }, []);
 
-  useEffect(() => {
+useEffect(() => {
     if (initialData) {
       setFormData({
-        amount: Math.abs(initialData.amount).toString(),
-        category: initialData.category,
-        type: initialData.type,
-        description: initialData.description,
-        date: formatDateInput(initialData.date)
+        amount: Math.abs(initialData.amount_c || initialData.amount).toString(),
+        category: initialData.category_c || initialData.category,
+        type: initialData.type_c || initialData.type,
+        description: initialData.description_c || initialData.description,
+        date: formatDateInput(initialData.date_c || initialData.date)
       });
     }
   }, [initialData]);
@@ -58,12 +58,14 @@ const TransactionForm = ({ onSubmit, onCancel, initialData = null, isEditing = f
       return;
     }
 
-    setLoading(true);
+setLoading(true);
     try {
       const transactionData = {
-        ...formData,
-        amount: formData.type === "expense" ? -Math.abs(amount) : Math.abs(amount),
-        date: new Date(formData.date).toISOString()
+        description_c: formData.description,
+        amount_c: formData.type === "expense" ? -Math.abs(amount) : Math.abs(amount),
+        category_c: formData.category,
+        date_c: new Date(formData.date).toISOString(),
+        type_c: formData.type
       };
 
       await onSubmit(transactionData);
@@ -88,8 +90,8 @@ const TransactionForm = ({ onSubmit, onCancel, initialData = null, isEditing = f
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const expenseCategories = categories.filter(c => c.type === "expense");
-  const incomeCategories = categories.filter(c => c.type === "income");
+const expenseCategories = categories.filter(c => (c.type_c || c.type) === "expense");
+  const incomeCategories = categories.filter(c => (c.type_c || c.type) === "income");
 
   return (
     <Card className="p-6">
@@ -128,15 +130,15 @@ const TransactionForm = ({ onSubmit, onCancel, initialData = null, isEditing = f
               <option value="">Select category...</option>
               {formData.type === "expense" && 
                 expenseCategories.map(category => (
-                  <option key={category.Id} value={category.name}>
-                    {category.name}
+<option key={category.Id} value={category.name_c || category.name}>
+                    {category.name_c || category.name}
                   </option>
                 ))
               }
               {formData.type === "income" && 
                 incomeCategories.map(category => (
-                  <option key={category.Id} value={category.name}>
-                    {category.name}
+                  <option key={category.Id} value={category.name_c || category.name}>
+                    {category.name_c || category.name}
                   </option>
                 ))
               }

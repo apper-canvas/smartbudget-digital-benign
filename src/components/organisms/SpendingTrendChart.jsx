@@ -26,19 +26,19 @@ const SpendingTrendChart = () => {
       const transactions = await transactionService.getAll();
       const months = getLastMonths(timeRange === "6months" ? 6 : 12);
       
-      const monthlyData = months.map(month => {
+const monthlyData = months.map(month => {
         const monthTransactions = transactions.filter(t => {
-          const transactionMonth = new Date(t.date).toISOString().slice(0, 7);
+          const transactionMonth = new Date(t.date_c || t.date).toISOString().slice(0, 7);
           return transactionMonth === month.key;
         });
 
         const income = monthTransactions
-          .filter(t => t.type === "income")
-          .reduce((sum, t) => sum + t.amount, 0);
+          .filter(t => (t.type_c || t.type) === "income")
+          .reduce((sum, t) => sum + (t.amount_c || t.amount), 0);
         
         const expenses = Math.abs(monthTransactions
-          .filter(t => t.type === "expense")
-          .reduce((sum, t) => sum + t.amount, 0));
+          .filter(t => (t.type_c || t.type) === "expense")
+          .reduce((sum, t) => sum + (t.amount_c || t.amount), 0));
 
         return {
           month: month.label,

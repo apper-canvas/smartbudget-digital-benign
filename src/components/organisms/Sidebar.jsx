@@ -1,9 +1,12 @@
 import React from "react";
 import NavigationItem from "@/components/molecules/NavigationItem";
 import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
 import { cn } from "@/utils/cn";
+import { useAuth } from "@/layouts/Root";
 
 const Sidebar = ({ isOpen, onClose }) => {
+  const { logout } = useAuth();
   const navigationItems = [
     { to: "/", icon: "LayoutDashboard", label: "Dashboard" },
     { to: "/transactions", icon: "Receipt", label: "Transactions" },
@@ -43,18 +46,26 @@ const Sidebar = ({ isOpen, onClose }) => {
             ))}
           </nav>
 
-          <div className="p-4 border-t border-slate-200">
+<div className="p-4 border-t border-slate-200 space-y-3">
             <div className="p-4 bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg border border-slate-200">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
                   <ApperIcon name="User" className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-900 truncate">John Doe</p>
-                  <p className="text-xs text-slate-500">Premium User</p>
+                  <p className="text-sm font-medium text-slate-900 truncate">User</p>
+                  <p className="text-xs text-slate-500">SmartBudget</p>
                 </div>
               </div>
             </div>
+            <Button
+              variant="secondary"
+              className="w-full"
+              onClick={logout}
+            >
+              <ApperIcon name="LogOut" className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
           </div>
         </div>
       </div>
@@ -103,18 +114,27 @@ const Sidebar = ({ isOpen, onClose }) => {
               ))}
             </nav>
 
-            <div className="p-4 border-t border-slate-200">
+<div className="p-4 border-t border-slate-200 space-y-3">
               <div className="p-3 bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg">
                 <div className="flex items-center space-x-2">
                   <div className="w-6 h-6 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
                     <ApperIcon name="User" className="w-3 h-3 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-slate-900">John Doe</p>
-                    <p className="text-xs text-slate-500">Premium User</p>
+                    <p className="text-sm font-medium text-slate-900">User</p>
+                    <p className="text-xs text-slate-500">SmartBudget</p>
                   </div>
                 </div>
               </div>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="w-full"
+                onClick={logout}
+              >
+                <ApperIcon name="LogOut" className="w-3 h-3 mr-2" />
+                Logout
+              </Button>
             </div>
           </div>
         </div>

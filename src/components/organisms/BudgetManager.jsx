@@ -35,7 +35,7 @@ const BudgetManager = () => {
     
     try {
       const currentMonth = getCurrentMonth();
-      const [budgetsData, categoriesData, transactionsData] = await Promise.all([
+const [budgetsData, categoriesData, transactionsData] = await Promise.all([
         budgetService.getByMonth(currentMonth),
         categoryService.getByType("expense"),
         transactionService.getByMonth(currentMonth)
@@ -43,7 +43,7 @@ const BudgetManager = () => {
       
       setBudgets(budgetsData);
       setCategories(categoriesData);
-      setTransactions(transactionsData.filter(t => t.type === "expense"));
+      setTransactions(transactionsData.filter(t => (t.type_c || t.type) === "expense"));
     } catch (err) {
       setError("Failed to load budget data");
     } finally {
@@ -69,7 +69,7 @@ const BudgetManager = () => {
       const currentMonth = getCurrentMonth();
       const [year, month] = currentMonth.split("-");
       
-      await budgetService.upsertBudget(
+await budgetService.upsertBudget(
         formData.category,
         limit,
         currentMonth,
@@ -85,10 +85,10 @@ const BudgetManager = () => {
     }
   };
 
-  const getSpentAmount = (category) => {
+const getSpentAmount = (category) => {
     return transactions
-      .filter(t => t.category === category)
-      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+      .filter(t => (t.category_c || t.category) === category)
+      .reduce((sum, t) => sum + Math.abs(t.amount_c || t.amount), 0);
   };
 
   const getProgressPercentage = (spent, limit) => {
@@ -134,10 +134,10 @@ const BudgetManager = () => {
                   >
                     <option value="">Select category...</option>
                     {categories
-                      .filter(cat => !budgets.find(b => b.category === cat.name))
+.filter(cat => !budgets.find(b => (b.category_c || b.category) === (cat.name_c || cat.name)))
                       .map(category => (
-                        <option key={category.Id} value={category.name}>
-                          {category.name}
+                        <option key={category.Id} value={category.name_c || category.name}>
+                          {category.name_c || category.name}
                         </option>
                       ))
                     }
@@ -186,13 +186,13 @@ const BudgetManager = () => {
             const color = getProgressColor(percentage);
 
             return (
-              <Card key={budget.Id} className="p-6">
+<Card key={budget.Id} className="p-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-slate-900">{budget.category}</h3>
+                    <h3 className="text-lg font-semibold text-slate-900">{budget.category_c || budget.category}</h3>
                     <div className="text-right">
                       <p className="text-sm text-slate-600">
-                        {formatCurrency(spent)} of {formatCurrency(budget.monthlyLimit)}
+                        {formatCurrency(spent)} of {formatCurrency(budget.monthly_limit_c || budget.monthlyLimit)}
                       </p>
                       <p className={`text-sm font-medium ${
                         remaining > 0 ? "text-success-600" : "text-error-600"
