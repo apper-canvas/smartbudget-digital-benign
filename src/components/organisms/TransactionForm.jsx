@@ -121,23 +121,23 @@ const expenseCategories = categories.filter(c => (c.type_c || c.type) === "expen
           </FormField>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField label="Category *">
             <Select
               value={formData.category}
               onChange={(e) => handleChange("category", e.target.value)}
             >
-              <option value="">Select category...</option>
+              <option value="" style={{ backgroundColor: '#ffffff', color: '#1f2937', padding: '8px 12px', fontSize: '14px' }}>Select category...</option>
               {formData.type === "expense" && 
                 expenseCategories.map(category => (
-<option key={category.Id} value={category.name_c || category.name}>
+                  <option key={category.Id} value={category.name_c || category.name} style={{ backgroundColor: '#ffffff', color: '#1f2937', padding: '8px 12px', fontSize: '14px' }}>
                     {category.name_c || category.name}
                   </option>
                 ))
               }
               {formData.type === "income" && 
                 incomeCategories.map(category => (
-                  <option key={category.Id} value={category.name_c || category.name}>
+                  <option key={category.Id} value={category.name_c || category.name} style={{ backgroundColor: '#ffffff', color: '#1f2937', padding: '8px 12px', fontSize: '14px' }}>
                     {category.name_c || category.name}
                   </option>
                 ))
